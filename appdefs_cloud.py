@@ -52,7 +52,7 @@ python main.py ask "Where is my biggest waste this month?" --cloud aws
 python main.py plan --cloud aws --target-savings 5000""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Cost Optimization", "FinOps", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _get_aws_client(service):
@@ -390,7 +390,7 @@ python main.py remediate --finding s3-public-read
 python main.py report --cloud aws --output report.json""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Security", "IAM", "Networking", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _get_aws_client(service):
@@ -428,8 +428,6 @@ def _scan_aws_s3(region):
                     _add("critical", "storage", name, "S3 bucket has public ACL",
                          f"Bucket {name} grants access to AllUsers or AuthenticatedUsers",
                          f"aws s3api delete-bucket-public-block --bucket {name}  # then set ACL to private", "aws")
-                except Exception:
-                    pass
             except Exception:
                 pass
             try:
@@ -744,7 +742,7 @@ python main.py validate main.tf --target aws
 python main.py estimate main.tf""",
     "OPENAI_API_KEY",
     ["Python", "Terraform", "CloudFormation", "AWS", "GCP", "Azure", "IaC", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 PROVIDER_RESOURCES = {
@@ -1091,7 +1089,7 @@ python main.py root-cause --error "503 Service Unavailable" --cloud aws --log-gr
 python main.py summarize --alerts alerts.json --phase initial""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Log Analysis", "SRE", "Security", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _query_aws_cloudwatch(log_group, hours, filter_pattern=""):
@@ -1123,9 +1121,9 @@ def _query_gcp(hours, log_name=""):
         from google.cloud import logging as gcp_logging
         client = gcp_logging.Client()
         start = datetime.utcnow() - timedelta(hours=hours)
-        query = f"timestamp > \\"{start.isoformat()}\\""
+        query = f"timestamp > \"{start.isoformat()}\""
         if log_name:
-            query += f" AND resource.labels.project_id = \\"{log_name.split('/')[1]}\\""
+            query += f" AND resource.labels.project_id = \"{log_name.split('/')[1]}\""
         entries = []
         for entry in client.list_entries(filter=query, size=300):
             ts = entry.timestamp.isoformat() if entry.timestamp else "unknown"
@@ -1435,7 +1433,7 @@ python main.py diagnose --cloud aws --instance i-1234567890abcdef0
 python main.py recover --cloud aws --service my-api --action restart""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Auto-Healing", "SRE", "Monitoring", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _aws_client(service):
@@ -1879,7 +1877,7 @@ python main.py risk --source aws --target gcp --inventory inventory.json
 python main.py cutover --source aws --target gcp --services web,api,db --phase 1""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Migration", "FinOps", "Architecture", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 SERVICE_MAP = {
@@ -2289,7 +2287,7 @@ python main.py unused --cloud aws --principal my-role --days 90
 python main.py report --cloud aws --output audit.json""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "IAM", "Least Privilege", "Security", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _get_aws_client(service):
@@ -2347,8 +2345,8 @@ def _analyze_policy(policy_doc):
                         "action": action, "resource": "*"
                     })
     admin_indicators = ["iam:PassRole", "iam:CreateRole", "iam:AttachRolePolicy", "ec2:RunInstances", "s3:PutBucketAcl"]
-    has_admin = any(a in [v.get("action", "") for v in violations] or
-                    any(ai in actions_flat(policy_doc) for ai in admin_indicators)
+    has_admin = any(a in [v.get("action", "") for v in violations]) or \
+                any(ai in actions_flat(policy_doc) for ai in admin_indicators)
     return violations, has_admin
 
 def actions_flat(policy_doc):
@@ -2606,7 +2604,8 @@ def cmd_report(args):
             print(f"  {sev}: {cnt}")
     principals_affected = set(f["principal"] for f in findings)
     print(f"Principals with findings: {len(principals_affected)}")
-    exec_summary = llm.generate(f"Write a 150-word executive summary of this IAM audit. {cloud}, {len(findings)} findings across {len(principals_affected)} principals. Severity: {json.dumps(summary)}. Top issues: {json.dumps([f['title' if 'title' in f else f['type'] for f in findings[:5]])}. Risk rating and top 3 actions for this week.")
+    top_issues = [f.get("title", f.get("type", "unknown")) for f in findings[:5]]
+    exec_summary = llm.generate(f"Write a 150-word executive summary of this IAM audit. {cloud}, {len(findings)} findings across {len(principals_affected)} principals. Severity: {json.dumps(summary)}. Top issues: {json.dumps(top_issues)}. Risk rating and top 3 actions for this week.")
     print(f"\\n  EXECUTIVE SUMMARY:\\n")
     print(exec_summary)
     if args.output:
@@ -2668,7 +2667,7 @@ python main.py playbook --cloud aws --service my-api --incident "DB connection p
 python main.py postmortem --cloud aws --service my-api --duration 45min""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Incident Response", "SRE", "Correlation", "LLM"],
-    '''import json, os, re, sys, time, statistics
+    r'''import json, os, re, sys, time, statistics
 from datetime import datetime, timedelta
 
 def _collect_aws_metrics(service, window_hours=1):
@@ -3066,7 +3065,7 @@ python main.py test-restore --cloud aws --snapshot snap-12345678
 python main.py report --cloud aws --output backup_report.json""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Backup", "Disaster Recovery", "SRE", "LLM"],
-    '''import json, os, re, sys, time, statistics, argparse
+    r'''import json, os, re, sys, time, statistics, argparse
 from datetime import datetime, timedelta
 
 class LLM:
@@ -3456,7 +3455,7 @@ python main.py compare --cloud aws --baseline i-12345678 --current i-87654321
 python main.py report --cloud aws --output perf_report.json""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Performance", "SRE", "DevOps", "LLM"],
-    '''import json, os, re, sys, time, argparse
+    r'''import json, os, re, sys, time, argparse
 from datetime import datetime, timedelta
 
 class LLM:
@@ -3945,7 +3944,7 @@ python main.py runbook --cloud aws --output dr_runbook.md
 python main.py validate --cloud aws --target-rto 15 --target-rpo 1""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "DR", "SRE", "Reliability", "LLM"],
-    '''import json, os, re, sys, time, argparse
+    r'''import json, os, re, sys, time, argparse
 from datetime import datetime, timedelta
 
 class LLM:
@@ -4398,7 +4397,7 @@ python main.py evidence --cloud aws --framework hipaa --control 164.312
 python main.py report --cloud aws --frameworks all --output compliance.json""",
     "OPENAI_API_KEY",
     ["Python", "AWS", "GCP", "Azure", "Compliance", "Security", "Audit", "LLM"],
-    '''import json, os, re, sys, time, argparse
+    r'''import json, os, re, sys, time, argparse
 from datetime import datetime, timedelta
 
 class LLM:
