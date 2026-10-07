@@ -1,0 +1,6 @@
+.env
+__pycache__/
+repos/
+pushed.log
+state.json
+cron.log
