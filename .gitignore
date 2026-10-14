@@ -4,3 +4,17 @@ repos/
 pushed.log
 state.json
 cron.log
+.venv/
+node_modules/
+dist/
+*.db
+*.sqlite
+*.egg-info/
+.antigravitycli/
+.omp/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/

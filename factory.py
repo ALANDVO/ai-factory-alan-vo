@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
 """ai-factory v3: Build enterprise apps, push to GitHub, 1-for-1 rotation, clean local."""
-import sys, os, json, shutil, subprocess, datetime, urllib.request, urllib.error
+import sys, os, json, shutil, subprocess, datetime, urllib.request, urllib.error, argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GH_USER = "ALANDVO"
 EMAIL = "alanvo@gmail.com"
 BASE = os.path.expanduser("~/ai-factory/repos")
 LOG = os.path.expanduser("~/ai-factory/pushed.log")
 STATE = os.path.expanduser("~/ai-factory/state.json")
+VERSION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "VERSION")
+
+
+def get_version():
+    """Read version from VERSION file."""
+    try:
+        with open(VERSION_FILE, "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return "unknown"
+
 
 def log(msg):
     print(msg, flush=True)
@@ -290,6 +300,52 @@ HOST=0.0.0.0
 PORT=8000
 """
 
+
+def gen_portfolio_json(app_def, repo_name):
+    """Generate portfolio.json for the app."""
+    import json
+    name = repo_name
+    desc = app_def.get("desc", "")
+    features = app_def.get("features", [])
+    tech = app_def.get("tech", [])
+    
+    # Derive domain from tech/tags
+    domain_keywords = []
+    for t in tech:
+        if "AI" in t.upper() or "ML" in t.upper() or "LLM" in t.upper():
+            domain_keywords.append("AI/ML")
+        if "Security" in t or "CVE" in t or "NVD" in t or "MITRE" in t:
+            domain_keywords.append("Security")
+        if "Cloud" in t or "AWS" in t or "GCP" in t or "Azure" in t or "Kubernetes" in t:
+            domain_keywords.append("Cloud/Infrastructure")
+        if "Data" in t or "ELK" in t or "Splunk" in t or "Log" in t:
+            domain_keywords.append("Data/Observability")
+    domain = ", ".join(sorted(set(domain_keywords))) if domain_keywords else "AI/ML Application"
+    
+    # Workflows from features (at least 3)
+    workflows = features[:5] if len(features) >= 3 else features + ["AI-powered analysis", "Automated reporting"] * (3 - len(features))
+    workflows = workflows[:5]
+    
+    summary = desc.split(". ")[0]
+    if summary and not summary.endswith("."):
+        summary += "."
+    elif not summary:
+        summary = f"AI-powered {name.replace('-alan-vo', '')} application."
+    
+    portfolio = {
+        "schema_version": 1,
+        "name": name,
+        "owner": "ALANDVO",
+        "email": "alanvo@gmail.com",
+        "domain": domain,
+        "workflows": workflows,
+        "auth": "llm-api-key",
+        "llm_providers": ["openai-compatible", "anthropic", "gemini", "ollama"],
+        "summary": summary,
+    }
+    return json.dumps(portfolio, indent=2)
+
+
 def gen_dockerfile(tech=None):
     return """FROM python:3.11-slim
 
@@ -429,6 +485,7 @@ def build_app(app_def):
     files["docker-compose.yml"] = gen_docker_compose()
     files["CONTRIBUTING.md"] = gen_contributing(name)
     files[".github/CODEOWNERS"] = f"* @{GH_USER.lower()}\n"
+    files["portfolio.json"] = gen_portfolio_json(app_def, name)
 
     # App-specific files
     if "files" in app_def and app_def["files"]:
@@ -572,6 +629,7 @@ def build_app_into(app_def, dir):
     files["docker-compose.yml"] = gen_docker_compose()
     files["CONTRIBUTING.md"] = gen_contributing(name)
     files[".github/CODEOWNERS"] = f"* @{GH_USER.lower()}\n"
+    files["portfolio.json"] = gen_portfolio_json(app_def, name)
 
     # App-specific files
     if "files" in app_def and app_def["files"]:
@@ -584,7 +642,81 @@ def build_app_into(app_def, dir):
         with open(full, "w") as f:
             f.write(content)
 
-def main():
+def list_apps(all_apps):
+    """Print all available apps with descriptions."""
+    print(f"\nAvailable apps ({len(all_apps)}):")
+    print("=" * 60)
+    for app in all_apps:
+        name = repo_name(app["name"])
+        desc = app.get("desc", "No description")
+        features = app.get("features", [])
+        print(f"\n  {name}")
+        print(f"    Description: {desc}")
+        if features:
+            print(f"    Features: {len(features)}")
+            for f in features[:3]:
+                print(f"      - {f}")
+            if len(features) > 3:
+                print(f"      ... and {len(features) - 3} more")
+    print()
+
+
+def run_dry_run(app_def):
+    """Generate app files locally without pushing."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        dir_path, name = build_app(app_def)
+        # Copy to a visible location for inspection
+        target = os.path.join(os.getcwd(), f"{name}-dryrun")
+        if os.path.exists(target):
+            shutil.rmtree(target)
+        shutil.copytree(dir_path, target)
+        print(f"\nDry-run complete. Files generated at: {target}")
+        print(f"App: {name}")
+        print(f"Files: {len(os.listdir(target))} top-level items")
+        for root, dirs, files in os.walk(target):
+            level = root.replace(target, "").count(os.sep)
+            indent = "  " * level
+            print(f"{indent}{os.path.basename(root)}/")
+            for f in files:
+                print(f"{indent}  {f}")
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="ai-factory: Generate AI/ML apps and publish to GitHub",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=f"""
+Examples:
+  ai-factory                    # Run normal cycle (create or update)
+  ai-factory --list             # Show all available apps
+  ai-factory --app threat-intel-analyzer --dry-run  # Generate locally only
+  ai-factory --app log-anomaly-detector  # Build and push specific app
+  ai-factory --update-only      # Run update cycle only
+  ai-factory --clean            # Clean local build artifacts and state
+  ai-factory --version          # Show version and exit
+"""
+    )
+    parser.add_argument("--version", action="store_true", help="Show version and exit")
+    parser.add_argument("--list", action="store_true", help="List all available apps with descriptions")
+    parser.add_argument("--app", metavar="NAME", help="Build specific app by name (without -alan-vo suffix)")
+    parser.add_argument("--dry-run", action="store_true", help="Generate files locally without pushing to GitHub")
+    parser.add_argument("--update-only", action="store_true", help="Run update cycle only (skip new app creation)")
+    parser.add_argument("--clean", action="store_true", help="Clean local build artifacts and state")
+    args = parser.parse_args(argv)
+
+    if args.version:
+        print(f"ai-factory {get_version()}")
+        return
+
+    log("=" * 60)
+    log(f"ai-factory run @ {datetime.datetime.now().isoformat()}")
+    log("=" * 60)
+
+    if args.clean:
+        clean_all()
+        return
+
     log("=" * 60)
     log(f"ai-factory run @ {datetime.datetime.now().isoformat()}")
     log("=" * 60)
@@ -594,6 +726,57 @@ def main():
         log("No apps found! Create appdefs files first.")
         return
 
+    if args.list:
+        list_apps(all_apps)
+        return
+
+    if args.app:
+        # Find the app by name (without suffix)
+        app = None
+        for a in all_apps:
+            if a["name"] == args.app:
+                app = a
+                break
+        if not app:
+            log(f"App not found: {args.app}")
+            log("Use --list to see available apps")
+            return
+
+        if args.dry_run:
+            run_dry_run(app)
+            return
+
+        # Build and push specific app
+        name = repo_name(app["name"])
+        log(f"Building: {name}")
+
+        dir_path, name = build_app(app)
+
+        if not create_repo(name, app["desc"]):
+            log("FAILED: could not create repo")
+            return
+
+        ok, err = push(dir_path, name)
+        if ok:
+            mark_pushed(name)
+            clean_local(name)
+            log(f"  DONE: https://github.com/{GH_USER}/{name}")
+        else:
+            log(f"  FAILED: {err}")
+        return
+
+    if args.update_only:
+        state = load_state()
+        if state["repos"]:
+            repos = sorted(state["repos"], key=lambda r: r.get("updated_at", r["pushed_at"]))
+            oldest = repos[0]
+            log(f"Updating oldest: {oldest['name']} (updates: {oldest.get('update_count', 0)})")
+            update_repo(oldest, all_apps)
+        else:
+            log("No repos to update")
+        return
+
+    # Default behavior: normal cycle
     state = load_state()
     pushed = {r["name"] for r in state["repos"]}
 
@@ -618,19 +801,34 @@ def main():
     name = repo_name(app["name"])
     log(f"Building: {name}")
 
-    dir, name = build_app(app)
+    dir_path, name = build_app(app)
 
     if not create_repo(name, app["desc"]):
         log("FAILED: could not create repo")
         return
 
-    ok, err = push(dir, name)
+    ok, err = push(dir_path, name)
     if ok:
         mark_pushed(name)
         clean_local(name)
         log(f"  DONE: https://github.com/{GH_USER}/{name}")
     else:
         log(f"  FAILED: {err}")
+
+def clean_all():
+    """Clean all local build artifacts and state."""
+    import shutil
+    for path, label in [(BASE, "repos dir"), (STATE, "state file"), (LOG, "log file")]:
+        if os.path.exists(path):
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+            log(f"  removed {label}: {path}")
+        else:
+            log(f"  not found (already clean): {label}")
+    log("Clean complete.")
+
 
 if __name__ == "__main__":
     main()
