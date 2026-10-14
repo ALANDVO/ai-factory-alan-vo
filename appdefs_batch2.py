@@ -1818,7 +1818,7 @@ def forge(args):
         "Write a Python function `build_features(df: pd.DataFrame) -> pd.DataFrame` that implements ALL these features. "
         "Use pandas. Handle missing values (fillna/0). Return a DataFrame with ONLY the engineered feature columns (no target, no raw inputs). "
         "Include a module-level docstring listing each feature and its rationale. "
-        "Code must run without warnings. No comments like '# TODO'.",
+        "Code must run without warnings. Do not leave placeholder comments for unfinished work.",
         system="You write production data pipelines. Vectorized pandas only — no row-wise apply for numeric transforms. Safe fillna. Deterministic output."
     )
     print("  Code generated.\\n")

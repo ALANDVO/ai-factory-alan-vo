@@ -27,7 +27,7 @@ app(
     "python main.py score --path . --stack python,nodejs\npython main.py score --config config.json --output report.md\npython main.py diff --before old.json --after new.json",
     "LLM_API_KEY",
     ["Python", "OpenAI/Anthropic/Gemini", "OWASP", "CSP/HSTS", "Cryptography"],
-    '''def score(args):
+    r'''def score(args):
     """Score a codebase or config for security posture."""
     llm = LLM()
     target = args.path if args.path else (args.config if args.config else ".")
@@ -177,7 +177,7 @@ def main():
     e.add_argument("--path", default="."); e.set_defaults(fn=deps)
     args = p.parse_args()
     args.fn(args)
-'''
+    r'''
 )
 
 # ─── 2. AI Pair Programmer ───
@@ -197,7 +197,7 @@ app(
     "python main.py suggest --task \"rename all users->accounts\" --path src/\npython main.py session --task \"add retry with backoff to the API client\"\npython main.py explain --file src/auth.py --question \"why is the token stored here?\"",
     "LLM_API_KEY",
     ["Python", "OpenAI/Anthropic/Gemini", "AST/diff", "Multi-file refactor"],
-    '''def suggest(args):
+    r'''def suggest(args):
     """Suggest changes for a task against a codebase context."""
     llm = LLM()
     ctx = build_context(args.path, max_files=args.max_files)
@@ -368,7 +368,7 @@ def main():
     r.set_defaults(fn=refactor)
     args = p.parse_args()
     args.fn(args)
-'''
+    r'''
 )
 
 # ─── 3. Log-to-Observability ───

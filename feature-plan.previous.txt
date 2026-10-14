@@ -1,0 +1,89 @@
+{
+    "schema_version": 1,
+    "current_feature": "next-feature",
+    "features": [
+        {
+            "id": "packaging-and-tests",
+            "title": "Add pyproject.toml packaging and pytest test suite",
+            "status": "done",
+            "acceptance": [
+                "pyproject.toml defines package metadata, dependencies, and pytest configuration",
+                "pytest runs and passes with at least 5 meaningful tests covering core factory functions",
+                "Factory can be installed in editable mode via pip install -e ."
+            ],
+            "implementation": [
+                "pyproject.toml",
+                "tests/test_factory.py"
+            ],
+            "tests": [
+                "tests/test_factory.py"
+            ]
+        },
+        {
+            "id": "cli-arguments",
+            "title": "Add CLI argument parsing for app selection and dry-run",
+            "status": "done",
+            "acceptance": [
+                "--list shows all available apps with descriptions",
+                "--app <name> builds only that specific app",
+                "--dry-run shows what would be generated without pushing",
+                "--update-only runs only the update cycle"
+            ],
+            "implementation": [
+                "factory.py"
+            ],
+            "tests": [
+                "tests/test_factory.py"
+            ]
+        },
+        {
+            "id": "portfolio-json-generation",
+            "title": "Generate portfolio.json for each created app",
+            "status": "done",
+            "acceptance": [
+                "Each generated app includes portfolio.json at root",
+                "portfolio.json matches schema with name, owner, email, domain, workflows, auth, llm_providers"
+            ],
+            "implementation": [
+                "factory.py"
+            ],
+            "tests": [
+                "tests/test_portfolio_json.py"
+            ]
+        },
+        {
+            "id": "github-actions-ci",
+            "title": "Add GitHub Actions CI workflow for factory itself",
+            "status": "done",
+            "acceptance": [
+                ".github/workflows/ci.yml runs pytest on push/PR",
+                "Workflow uses ubuntu-latest runner",
+                "No paid services or custom runners"
+            ],
+            "implementation": [
+                ".github/workflows/ci.yml"
+            ],
+            "tests": [
+                "tests/test_factory.py"
+            ]
+        },
+        {
+            "id": "required-project-files",
+            "title": "Add missing required project files (README, LICENSE, CHANGELOG, .env.example)",
+            "status": "done",
+            "acceptance": [
+                "README.md describes the factory with install/run instructions",
+                "LICENSE is MIT with correct copyright",
+                "CHANGELOG.md tracks actual changes",
+                ".env.example documents required environment variables"
+            ],
+            "implementation": [
+                "README.md",
+                "LICENSE",
+                "CHANGELOG.md",
+                ".env.example"
+            ],
+            "tests": []
+        }
+    ]
+}

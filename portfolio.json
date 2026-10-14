@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "ai-factory-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML application generation and GitHub automation",
+  "workflows": [
+    "Generate complete AI/ML application repositories from 31+ templates",
+    "Automated GitHub repository creation and publishing with state tracking",
+    "Update cycle for enhancing existing repositories in 1-for-1 rotation",
+    "Dry-run local generation for inspection without publishing"
+  ],
+  "auth": "github-token",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "summary": "Work in progress: ai-factory-alan-vo",
+  "status": "work-in-progress"
+}

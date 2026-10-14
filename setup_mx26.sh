@@ -25,7 +25,7 @@ cd ~/ai-factory
 # 4. Set up .env (requires GITHUB_TOKEN in environment)
 echo "[4/6] Configuring environment..."
 if [ -z "$GITHUB_TOKEN" ]; then
-    echo "  ERROR: GITHUB_TOKEN not set. Run: export GITHUB_TOKEN=ghp_..."
+    echo "  ERROR: GITHUB_TOKEN not set. Export GITHUB_TOKEN and re-run this script."
     echo "  Then re-run this script."
     exit 1
 fi

@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-factory"
+version = "1.1.0"
+description = "AI/ML application factory — generates complete projects and publishes to GitHub"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Alan Vo", email = "alanvo@gmail.com"}]
+maintainers = [{name = "Alan Vo", email = "alanvo@gmail.com"}]
+keywords = ["ai", "ml", "factory", "generator", "github", "automation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+]
+optional-dependencies = { dev = ["pytest>=7.4.0", "pytest-mock>=3.12.0", "httpx>=0.25.0", "ruff>=0.1.0"] }
+
+[project.scripts]
+ai-factory = "factory:main"
+
+[tool.setuptools]
+py-modules = ["factory", "apps", "gen", "appdefs", "appdefs_batch2", "appdefs_batch3", "appdefs_cloud", "appdefs_enterprise"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+markers = [
+    "unit: fast unit tests",
+    "integration: tests requiring network or external services",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "PTH"]
+ignore = ["E501", "B008"]
+exclude = [".git", "__pycache__", ".venv", "dist", "build", "*.egg-info"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
