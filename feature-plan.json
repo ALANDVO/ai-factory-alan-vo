@@ -1,99 +1,13 @@
 {
   "schema_version": 1,
-  "current_feature": "ignore-local-artifacts",
+  "current_feature": "continue-implementation",
   "features": [
     {
-      "id": "clean-flag",
-      "title": "Add --clean flag to remove local build artifacts and state",
-      "status": "done",
-      "acceptance": [
-        "ai-factory --clean removes repos directory, state.json, and pushed.log",
-        "Command reports what was removed or already clean",
-        "No syntax warnings when running CLI"
-      ],
-      "implementation": [
-        "factory.py:clean_all function",
-        "factory.py:main argument parser --clean flag"
-      ],
-      "tests": [
-        "tests/test_factory.py (existing tests pass)"
-      ]
-    },
-    {
-      "id": "fix-syntax-warnings",
-      "title": "Fix SyntaxWarning invalid escape sequences in appdefs_batch3.py",
-      "status": "done",
-      "acceptance": [
-        "No SyntaxWarning on import of appdefs_batch3",
-        "All triple-quoted code templates are raw strings"
-      ],
-      "implementation": [
-        "appdefs_batch3.py: first two triple-quoted strings now raw (r''')"
-      ],
-      "tests": [
-        "python3 -W error::SyntaxWarning -c 'import appdefs_batch3' passes"
-      ]
-    },
-    {
-      "id": "fix-gitignore",
-      "title": "Add .venv/ to .gitignore",
-      "status": "done",
-      "acceptance": [
-        ".venv/ directory excluded from git"
-      ],
-      "implementation": [
-        ".gitignore: added .venv/"
-      ],
-      "tests": [
-        "git status shows .venv/ ignored"
-      ]
-    },
-    {
-      "id": "version-flag",
-      "title": "Add --version flag to show version from VERSION file",
-      "status": "done",
-      "acceptance": [
-        "ai-factory --version prints version and exits",
-        "Version read from VERSION file at project root",
-        "Flag exits early without loading apps or logging"
-      ],
-      "implementation": [
-        "factory.py:get_version function reads VERSION file",
-        "factory.py:main argument parser --version flag",
-        "factory.py:main handles --version before any other logic"
-      ],
-      "tests": [
-        "tests/test_factory.py::TestVersion::test_version_flag_prints_version",
-        "tests/test_factory.py::TestVersion::test_version_flag_exits_early"
-      ]
-    },
-    {
-      "id": "ignore-local-artifacts",
-      "title": "Keep virtualenvs, databases, and dependency trees out of the publish index",
-      "status": "done",
-      "acceptance": [
-        ".gitignore excludes .venv, node_modules, dist, bytecode, env files, databases, egg-info, and local agent metadata",
-        "git check-ignore matches those paths and still tracks .env.example",
-        "The git index does not list .venv or ai_factory.egg-info"
-      ],
-      "implementation": [
-        ".gitignore",
-        ".env.example",
-        "setup_mx26.sh"
-      ],
-      "tests": [
-        "tests/test_publish_ignore.py"
-      ]
-    },
-    {
-      "id": "browser-console",
-      "title": "Browser console for catalog, dry-run, and build history",
+      "id": "continue-implementation",
+      "title": "Continue implementation and resolve known failures",
       "status": "in_progress",
       "acceptance": [
-        "Operator can list templates, dry-run one app, and read build history from the API and UI",
-        "Docker build uses only files inside the backend context",
-        "Clean and cycle actions do not touch the operator home directory or GitHub unless explicitly configured",
-        "Login is unimplemented until a later milestone"
+        "Run checks, fix failures, and implement the next planned feature"
       ],
       "implementation": [],
       "tests": []
