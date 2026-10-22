@@ -1,89 +1,119 @@
 {
-    "schema_version": 1,
-    "current_feature": "next-feature",
-    "features": [
-        {
-            "id": "packaging-and-tests",
-            "title": "Add pyproject.toml packaging and pytest test suite",
-            "status": "done",
-            "acceptance": [
-                "pyproject.toml defines package metadata, dependencies, and pytest configuration",
-                "pytest runs and passes with at least 5 meaningful tests covering core factory functions",
-                "Factory can be installed in editable mode via pip install -e ."
-            ],
-            "implementation": [
-                "pyproject.toml",
-                "tests/test_factory.py"
-            ],
-            "tests": [
-                "tests/test_factory.py"
-            ]
-        },
-        {
-            "id": "cli-arguments",
-            "title": "Add CLI argument parsing for app selection and dry-run",
-            "status": "done",
-            "acceptance": [
-                "--list shows all available apps with descriptions",
-                "--app <name> builds only that specific app",
-                "--dry-run shows what would be generated without pushing",
-                "--update-only runs only the update cycle"
-            ],
-            "implementation": [
-                "factory.py"
-            ],
-            "tests": [
-                "tests/test_factory.py"
-            ]
-        },
-        {
-            "id": "portfolio-json-generation",
-            "title": "Generate portfolio.json for each created app",
-            "status": "done",
-            "acceptance": [
-                "Each generated app includes portfolio.json at root",
-                "portfolio.json matches schema with name, owner, email, domain, workflows, auth, llm_providers"
-            ],
-            "implementation": [
-                "factory.py"
-            ],
-            "tests": [
-                "tests/test_portfolio_json.py"
-            ]
-        },
-        {
-            "id": "github-actions-ci",
-            "title": "Add GitHub Actions CI workflow for factory itself",
-            "status": "done",
-            "acceptance": [
-                ".github/workflows/ci.yml runs pytest on push/PR",
-                "Workflow uses ubuntu-latest runner",
-                "No paid services or custom runners"
-            ],
-            "implementation": [
-                ".github/workflows/ci.yml"
-            ],
-            "tests": [
-                "tests/test_factory.py"
-            ]
-        },
-        {
-            "id": "required-project-files",
-            "title": "Add missing required project files (README, LICENSE, CHANGELOG, .env.example)",
-            "status": "done",
-            "acceptance": [
-                "README.md describes the factory with install/run instructions",
-                "LICENSE is MIT with correct copyright",
-                "CHANGELOG.md tracks actual changes",
-                ".env.example documents required environment variables"
-            ],
-            "implementation": [
-                "README.md",
-                "LICENSE",
-                "CHANGELOG.md",
-                ".env.example"
-            ],
-            "tests": []
-        }
-    ]
+  "schema_version": 1,
+  "current_feature": "version-flag-fix",
+  "features": [
+    {
+      "id": "clean-flag",
+      "title": "Add --clean flag to remove local build artifacts and state",
+      "status": "done",
+      "acceptance": [
+        "ai-factory --clean removes repos directory, state.json, and pushed.log",
+        "Command reports what was removed or already clean",
+        "No syntax warnings when running CLI"
+      ],
+      "implementation": [
+        "factory.py:clean_all function",
+        "factory.py:main argument parser --clean flag"
+      ],
+      "tests": [
+        "tests/test_factory.py (existing tests pass)"
+      ]
+    },
+    {
+      "id": "fix-syntax-warnings",
+      "title": "Fix SyntaxWarning invalid escape sequences in appdefs_batch3.py",
+      "status": "done",
+      "acceptance": [
+        "No SyntaxWarning on import of appdefs_batch3",
+        "All triple-quoted code templates are raw strings"
+      ],
+      "implementation": [
+        "appdefs_batch3.py: first two triple-quoted strings now raw (r''')"
+      ],
+      "tests": [
+        "python3 -W error::SyntaxWarning -c 'import appdefs_batch3' passes"
+      ]
+    },
+    {
+      "id": "fix-gitignore",
+      "title": "Add .venv/ to .gitignore",
+      "status": "done",
+      "acceptance": [
+        ".venv/ directory excluded from git"
+      ],
+      "implementation": [
+        ".gitignore: added .venv/"
+      ],
+      "tests": [
+        "git status shows .venv/ ignored"
+      ]
+    },
+    {
+      "id": "version-flag",
+      "title": "Add --version flag to show version from VERSION file",
+      "status": "done",
+      "acceptance": [
+        "ai-factory --version prints version and exits",
+        "Version read from VERSION file at project root",
+        "Flag exits early without loading apps or logging"
+      ],
+      "implementation": [
+        "factory.py:get_version function reads VERSION file",
+        "factory.py:main argument parser --version flag",
+        "factory.py:main handles --version before any other logic"
+      ],
+      "tests": [
+        "tests/test_factory.py::TestVersion::test_version_flag_prints_version",
+        "tests/test_factory.py::TestVersion::test_version_flag_exits_early"
+      ]
+    },
+    {
+      "id": "ignore-local-artifacts",
+      "title": "Keep virtualenvs, databases, and dependency trees out of the publish index",
+      "status": "done",
+      "acceptance": [
+        ".gitignore excludes .venv, node_modules, dist, bytecode, env files, databases, egg-info, and local agent metadata",
+        "git check-ignore matches those paths and still tracks .env.example",
+        "The git index does not list .venv or ai_factory.egg-info"
+      ],
+      "implementation": [
+        ".gitignore",
+        ".env.example",
+        "setup_mx26.sh"
+      ],
+      "tests": [
+        "tests/test_publish_ignore.py"
+      ]
+    },
+    {
+      "id": "browser-console",
+      "title": "Browser console for catalog, dry-run, and build history",
+      "status": "done",
+      "acceptance": [
+        "Operator can list templates, dry-run one app, and read build history from the API and UI",
+        "Docker build uses only files inside the backend context",
+        "Clean and cycle actions do not touch the operator home directory or GitHub unless explicitly configured",
+        "Login is unimplemented until a later milestone"
+      ],
+      "implementation": [
+        "backend/app/api/routes.py: /api/v1/apps, /api/v1/apps/{app_name}/dry-run, /api/v1/builds, /api/v1/audit endpoints",
+        "backend/app/services/factory_service.py: FactoryService with list_apps, dry_run, get_build_history, get_audit_logs methods",
+        "frontend/src/store.ts: useStore with fetchApps, runDryRun, fetchBuilds, fetchAuditLogs actions",
+        "frontend/src/pages/Apps.tsx: App catalog with search, dry-run, and build actions",
+        "frontend/src/pages/Builds.tsx: Build history with pagination",
+        "frontend/src/pages/Audit.tsx: Audit logs with pagination",
+        "frontend/src/pages/Dashboard.tsx: Dashboard with build stats and recent activity",
+        "compose.yaml: Docker compose with backend and frontend services",
+        "backend/Dockerfile, frontend/Dockerfile: Multi-stage builds with non-root users"
+      ],
+      "tests": [
+        "backend/tests/test_api.py::TestAppsAPI - list, get, dry-run tests",
+        "backend/tests/test_api.py::TestBuildsAPI - build history pagination tests",
+        "backend/tests/test_api.py::TestAuditAPI - audit log pagination tests",
+        "backend/tests/test_api.py::TestCleanAPI - clean artifacts test (skipped, touches home)",
+        "backend/tests/test_api.py::TestCycleAPI - factory cycle test (skipped, pushes to GitHub)",
+        "frontend/src/App.test.tsx - renders dashboard and navigation"
+      ]
+    }
+  ]
 }
