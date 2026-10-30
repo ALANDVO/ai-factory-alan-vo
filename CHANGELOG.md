@@ -1,8 +1,22 @@
 # Changelog
 
+## 1.3.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.2.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## [1.2.0] - 2026-10-30
+
+### Fixed
+- Version test in `tests/test_factory.py` now reads version dynamically from VERSION file via `factory.get_version()` instead of hardcoded "1.1.0"
+- pytest configuration updated with `asyncio_mode = "auto"` and backend tests path for proper async test support
+
+### Changed
+- Updated pyproject.toml version to 1.2.0 (matches VERSION file)
+- Backend API tests now run correctly with pytest-asyncio
 
 ## 1.0.0 — work-in-progress checkpoint
 

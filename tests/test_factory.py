@@ -442,9 +442,10 @@ class TestVersion:
 
     def test_version_flag_prints_version(self, capsys):
         """--version prints version and exits."""
+        expected_version = factory.get_version()
         factory.main(argv=["--version"])
         captured = capsys.readouterr()
-        assert "ai-factory 1.1.0" in captured.out
+        assert f"ai-factory {expected_version}" in captured.out
 
     def test_version_flag_exits_early(self):
         """--version exits without loading apps or logging."""
