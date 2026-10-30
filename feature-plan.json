@@ -1,13 +1,86 @@
 {
   "schema_version": 1,
-  "current_feature": "continue-implementation",
+  "current_feature": "test-fix-and-version-sync",
   "features": [
+    {
+      "id": "test-fix-and-version-sync",
+      "title": "Fix version test and sync versions across project",
+      "status": "done",
+      "acceptance": [
+        "Version test in tests/test_factory.py reads dynamically from VERSION file via factory.get_version()",
+        "pyproject.toml version matches VERSION file (1.2.0)",
+        "Frontend package.json version matches VERSION file (1.2.0)",
+        "pytest configuration supports asyncio_mode = \"auto\" for backend async tests",
+        "All 45 Python tests pass (31 factory + 14 backend, 2 skipped)",
+        "All 4 frontend tests pass"
+      ],
+      "implementation": [
+        "tests/test_factory.py",
+        "pyproject.toml",
+        "frontend/package.json",
+        "CHANGELOG.md",
+        "PLAN.md",
+        "STATUS.md"
+      ],
+      "tests": [
+        "tests/test_factory.py::TestVersion::test_version_flag_prints_version",
+        "backend/tests/test_api.py"
+      ]
+    },
     {
       "id": "continue-implementation",
       "title": "Continue implementation and resolve known failures",
-      "status": "in_progress",
+      "status": "planned",
       "acceptance": [
         "Run checks, fix failures, and implement the next planned feature"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "docker-compose-integration",
+      "title": "Full docker-compose stack with backend, frontend, and database",
+      "status": "planned",
+      "acceptance": [
+        "docker-compose.yml builds and runs backend, frontend, and PostgreSQL",
+        "Health endpoints respond on all services",
+        "Frontend proxies API calls to backend"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "github-actions-ci",
+      "title": "CI/CD pipeline for automated testing and deployment",
+      "status": "planned",
+      "acceptance": [
+        "GitHub Actions workflow runs on push/PR",
+        "Runs Python tests, frontend tests, and lint",
+        "Builds Docker images"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "frontend-dashboard-enhancements",
+      "title": "Dashboard UI improvements",
+      "status": "planned",
+      "acceptance": [
+        "Real-time build status updates",
+        "App template browser with search/filter",
+        "Build history visualization"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "api-authentication",
+      "title": "API authentication and authorization",
+      "status": "planned",
+      "acceptance": [
+        "JWT-based authentication for API endpoints",
+        "Role-based access control (admin, user)",
+        "Protected routes for build/cycle/clean operations"
       ],
       "implementation": [],
       "tests": []
