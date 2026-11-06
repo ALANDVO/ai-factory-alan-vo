@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-test-fix-and-version-sync
+version-sync-complete
 
 ## Roadmap
 
@@ -24,9 +24,22 @@ Implementation: `tests/test_factory.py`, `pyproject.toml`, `frontend/package.jso
 
 Tests: `tests/test_factory.py::TestVersion::test_version_flag_prints_version`, `backend/tests/test_api.py`
 
+### version-sync-complete — Complete version sync across all project files
+
+Status: done
+
+Acceptance:
+- pyproject.toml version matches VERSION file (1.3.0)
+- Frontend package.json version matches VERSION file (1.3.0)
+- All tests pass with synced versions
+
+Implementation: `pyproject.toml`, `frontend/package.json`
+
+Tests: `tests/test_factory.py`, `backend/tests/test_api.py`, `frontend tests`
+
 ### continue-implementation — Continue implementation and resolve known failures
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - Run checks, fix failures, and implement the next planned feature
