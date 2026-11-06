@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.3.0 — 2026-11-06
+
+### Fixed
+- Version sync across all project files: pyproject.toml and frontend/package.json now match VERSION file (1.3.0)
+- All tests pass with synced versions (31 factory + 14 backend + 4 frontend)
+
 ## 1.3.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.

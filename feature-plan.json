@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "test-fix-and-version-sync",
+  "current_feature": "version-sync-complete",
   "features": [
     {
       "id": "test-fix-and-version-sync",
@@ -28,9 +28,28 @@
       ]
     },
     {
+      "id": "version-sync-complete",
+      "title": "Complete version sync across all project files",
+      "status": "done",
+      "acceptance": [
+        "pyproject.toml version matches VERSION file (1.3.0)",
+        "Frontend package.json version matches VERSION file (1.3.0)",
+        "All tests pass with synced versions"
+      ],
+      "implementation": [
+        "pyproject.toml",
+        "frontend/package.json"
+      ],
+      "tests": [
+        "tests/test_factory.py",
+        "backend/tests/test_api.py",
+        "frontend tests"
+      ]
+    },
+    {
       "id": "continue-implementation",
       "title": "Continue implementation and resolve known failures",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
         "Run checks, fix failures, and implement the next planned feature"
       ],
