@@ -186,3 +186,7 @@ Copyright (c) 2026 Alan Vo <alanvo@gmail.com>
 ---
 
 **Built by [Alan Vo](https://github.com/ALANDVO)** | AI, ML & Cybersecurity
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

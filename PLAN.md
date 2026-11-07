@@ -80,3 +80,6 @@ Acceptance:
 - Role-based access control (admin, user)
 - Protected routes for build/cycle/clean operations
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

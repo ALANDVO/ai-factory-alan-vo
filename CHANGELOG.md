@@ -148,3 +148,7 @@ Partial code published for continued development. Known issues: STATUS.md.
 - GitHub integration (repo creation, push, state tracking)
 - Local cleanup after push
 - 1-for-1 rotation: create new repos, then update oldest
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
