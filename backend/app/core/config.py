@@ -3,6 +3,17 @@ from functools import lru_cache
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
+import os
+
+
+def get_version() -> str:
+    """Read version from VERSION file."""
+    version_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "VERSION")
+    try:
+        with open(version_file, "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return "unknown"
 
 
 class Settings(BaseSettings):
@@ -17,7 +28,7 @@ class Settings(BaseSettings):
 
     # App metadata
     app_name: str = "ai-factory"
-    app_version: str = "1.1.0"
+    app_version: str = get_version()
     debug: bool = False
 
     # Database

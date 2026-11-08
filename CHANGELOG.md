@@ -1,8 +1,24 @@
 # Changelog
 
+## 1.5.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.4.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.4.0 — 2026-11-08
+
+### Fixed
+- FastAPI/Starlette version incompatibility (APIRouter on_startup error) by upgrading FastAPI to 0.115.0
+- Version sync across all project files: VERSION (1.4.0), pyproject.toml, frontend/package.json, backend config now all match
+- Backend health/root endpoints use dynamic version from VERSION file
+
+### Changed
+- Updated backend/requirements.txt with FastAPI 0.115.0
+- Backend API tests updated to use dynamic version from factory.get_version()
+- All 49 tests pass (31 factory + 14 backend + 4 frontend)
 
 ## 1.3.0 — 2026-11-06
 

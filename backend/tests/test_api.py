@@ -44,19 +44,25 @@ class TestHealth:
 
     async def test_health_endpoint(self, client):
         """Health endpoint returns ok."""
+        import sys, os
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        import factory
         response = await client.get("/api/v1/health")
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["version"] == "1.1.0"
+        assert data["version"] == factory.get_version()
 
     async def test_root_endpoint(self, client):
         """Root endpoint returns app info."""
+        import sys, os
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        import factory
         response = await client.get("/")
         assert response.status_code == 200
         data = response.json()
         assert data["name"] == "ai-factory"
-        assert data["version"] == "1.1.0"
+        assert data["version"] == factory.get_version()
 
 
 class TestAppsAPI:

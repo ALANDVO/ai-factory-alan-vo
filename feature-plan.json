@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "version-sync-complete",
+  "current_feature": "continue-implementation",
   "features": [
     {
       "id": "test-fix-and-version-sync",
@@ -49,12 +49,27 @@
     {
       "id": "continue-implementation",
       "title": "Continue implementation and resolve known failures",
-      "status": "in_progress",
+      "status": "done",
       "acceptance": [
-        "Run checks, fix failures, and implement the next planned feature"
+        "Run checks, fix failures, and implement the next planned feature",
+        "Fixed FastAPI/Starlette version incompatibility (APIRouter on_startup error)",
+        "Synced versions across all project files (1.4.0)",
+        "Backend health/root endpoints use dynamic version from VERSION file",
+        "All 49 tests pass (31 factory + 14 backend + 4 frontend)"
       ],
-      "implementation": [],
-      "tests": []
+      "implementation": [
+        "backend/requirements.txt",
+        "backend/app/api/routes.py",
+        "backend/app/core/config.py",
+        "backend/tests/test_api.py",
+        "pyproject.toml",
+        "frontend/package.json"
+      ],
+      "tests": [
+        "tests/test_factory.py",
+        "backend/tests/test_api.py",
+        "frontend tests"
+      ]
     },
     {
       "id": "docker-compose-integration",

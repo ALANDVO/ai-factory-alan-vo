@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-version-sync-complete
+continue-implementation
 
 ## Roadmap
 
@@ -39,10 +39,18 @@ Tests: `tests/test_factory.py`, `backend/tests/test_api.py`, `frontend tests`
 
 ### continue-implementation — Continue implementation and resolve known failures
 
-Status: in_progress
+Status: done
 
 Acceptance:
 - Run checks, fix failures, and implement the next planned feature
+- Fixed FastAPI/Starlette version incompatibility (APIRouter on_startup error)
+- Synced versions across all project files (1.4.0)
+- Backend health/root endpoints use dynamic version from VERSION file
+- All 49 tests pass (31 factory + 14 backend + 4 frontend)
+
+Implementation: `backend/requirements.txt`, `backend/app/api/routes.py`, `backend/app/core/config.py`, `backend/tests/test_api.py`, `pyproject.toml`, `frontend/package.json`
+
+Tests: `tests/test_factory.py`, `backend/tests/test_api.py`, `frontend tests`
 
 ### docker-compose-integration — Full docker-compose stack with backend, frontend, and database
 
