@@ -1,6 +1,6 @@
 {
   "name": "ai-factory-frontend",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -37,6 +37,6 @@
   "author": {
     "name": "Alan Vo",
     "email": "alanvo@gmail.com",
-    "url": "https://github.com/ALANDVO"
+    "url": "https://alanvo.net"
   }
 }

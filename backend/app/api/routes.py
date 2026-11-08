@@ -1,4 +1,8 @@
 """API routes for ai-factory backend."""
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+import factory
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 from typing import List, Optional
@@ -92,7 +96,7 @@ class HealthResponse(BaseModel):
 @router.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint."""
-    return HealthResponse(status="healthy", version="1.1.0")
+    return HealthResponse(status="healthy", version=factory.get_version())
 
 
 @router.get("/apps", response_model=AppListResponse)
