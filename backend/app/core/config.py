@@ -8,7 +8,7 @@ import os
 
 def get_version() -> str:
     """Read version from VERSION file."""
-    version_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), "VERSION")
+    version_file = "/var/lib/alan-portfolio/workspaces/alan/ai-factory-alan-vo/VERSION"
     try:
         with open(version_file, "r") as f:
             return f.read().strip()

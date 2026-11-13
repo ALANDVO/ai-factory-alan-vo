@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "threat-intel-analyzer-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML, Security",
+  "workflows": [
+    "Ingest CVE feeds, YARA rules, and STIX/TAXII threat intelligence",
+    "LLM-powered risk scoring and impact analysis per vulnerability",
+    "Auto-generated security briefings with executive summaries",
+    "Attack surface mapping \u2014 correlates CVEs to your tech stack",
+    "Natural language queries: 'What critical RCEs affect our Python stack?'"
+  ],
+  "auth": "llm-api-key",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "summary": "AI-powered threat intelligence platform that ingests CVEs, IOC feeds, and news to produce prioritized, actionable security briefings with LLM-generated context and risk scoring."
+}
