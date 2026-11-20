@@ -1,5 +1,7 @@
 # ai-factory — Alan Vo | AI & Machine Learning
 
+Current version: `1.7.0`.
+
 > Work in progress. This checkpoint may be incomplete or fail tests. See PLAN.md and STATUS.md before use.
 
 ai-factory builds complete project trees from a checked-in catalog of application templates and can publish those trees to GitHub. The generator is deterministic Python: each template supplies a description, feature list, and source, and the factory writes the repository layout around them. It is for a developer who wants a starting repository from that catalog.
