@@ -57,36 +57,31 @@ services:
     networks:
       - ai-factory-network
 
-  # Keycloak for OIDC authentication (optional - enable with profile)
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:26.0
-  #   container_name: ai-factory-keycloak
-  #   restart: unless-stopped
-  #   environment:
-  #     - KC_BOOTSTRAP_ADMIN_USERNAME=admin
-  #     - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
-  #     - KC_HOSTNAME=localhost
-  #     - KC_HTTP_ENABLED=true
-  #     - KC_PROXY=edge
-  #   command: start-dev --import-realm
-  #   volumes:
-  #     - keycloak_data:/opt/keycloak/data
-  #     - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-  #   ports:
-  #     - "127.0.0.1:8080:8080"
-  #   healthcheck:
-  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health/ready"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 30s
-  #   networks:
-  #     - ai-factory-network
+  db:
+    image: postgres:15-alpine
+    container_name: ai-factory-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ai_factory
+      POSTGRES_USER: ai_factory
+      POSTGRES_PASSWORD: ai_factory_pass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_factory -d ai_factory"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - ai-factory-network
 
 volumes:
   backend_data:
   backend_db:
-  # keycloak_data:
+  db_data:
 
 networks:
   ai-factory-network:
